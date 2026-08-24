@@ -333,6 +333,75 @@ else
     fail "anti-leakage content check"
 fi
 
+printf '\n===== INTEGRAZIONE CI =====\n'
+
+check_file .github/workflows/ci.yml
+
+if [ -x scripts/check-repository.sh ]; then
+    ok "validator locale eseguibile"
+else
+    fail "scripts/check-repository.sh non è eseguibile"
+fi
+
+if [ -f .github/workflows/ci.yml ]; then
+    if grep -Fx '  contents: read' \
+        .github/workflows/ci.yml >/dev/null 2>&1; then
+        ok "CI limita GITHUB_TOKEN a contents: read"
+    else
+        fail "CI senza permissions contents: read esplicito"
+    fi
+
+    if grep -Eq '^[[:space:]]*pull_request_target:' \
+        .github/workflows/ci.yml; then
+        fail "pull_request_target non ammesso nel workflow di validazione"
+    else
+        ok "CI non usa pull_request_target"
+    fi
+
+    if grep -Fx '          persist-credentials: false' \
+        .github/workflows/ci.yml >/dev/null 2>&1; then
+        ok "checkout non persiste credenziali"
+    else
+        fail "persist-credentials: false assente dal checkout"
+    fi
+
+    checkout_ref="$(
+        sed -n \
+            's/^[[:space:]]*uses:[[:space:]]*actions\/checkout@\([0-9a-fA-F]*\).*$/\1/p' \
+            .github/workflows/ci.yml \
+            | head -n 1
+    )"
+
+    case "$checkout_ref" in
+        [0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]*)
+            if [ "${#checkout_ref}" -eq 40 ]; then
+                ok "actions/checkout usa un riferimento SHA a 40 caratteri"
+            else
+                fail "actions/checkout non usa uno SHA completo a 40 caratteri"
+            fi
+            ;;
+        *)
+            fail "actions/checkout non risulta SHA-pinned"
+            ;;
+    esac
+
+    if grep -Fx \
+        '        run: scripts/check-repository.sh --require-prepared' \
+        .github/workflows/ci.yml >/dev/null 2>&1; then
+        ok "CI invoca il validator canonico con --require-prepared"
+    else
+        fail "CI non invoca esattamente il gate canonico --require-prepared"
+    fi
+
+    if grep -E -n \
+        'curl|wget|pip install|npm install|pnpm install|yarn install|apt(-get)? install|bash <|sh <' \
+        .github/workflows/ci.yml >/dev/null 2>&1; then
+        fail "workflow contiene installer o download remoto non ammesso"
+    else
+        ok "workflow senza installer/download remoto"
+    fi
+fi
+
 printf '\n===== HYGIENE GIT =====\n'
 
 if git diff --check; then
