@@ -5,7 +5,7 @@ learner, dall'implementazione e dalla verifica.
 
 ## Repository preparation
 
-Stato corrente: Preparation in progress
+Stato corrente: Prepared
 
 Stati ammessi:
 
@@ -46,11 +46,11 @@ Stati ammessi:
 `not applicable` è lo stato iniziale perché non esiste ancora alcuna
 implementazione da verificare.
 
-## Stato iniziale canonico
+## Stato canonico corrente
 
 | Asse | Stato |
 |---|---|
-| Repository preparation | Preparation in progress |
+| Repository preparation | Prepared |
 | Learner activity | not studied |
 | Implementation | not started |
 | Verification | not applicable |

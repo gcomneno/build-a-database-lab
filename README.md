@@ -10,7 +10,7 @@ di studio autonomo, rigoroso e tracciabile.
 
 | Asse | Stato |
 |---|---|
-| Repository preparation | Preparation in progress |
+| Repository preparation | Prepared |
 | Learner activity | not studied |
 | Implementation | not started |
 | Verification | not applicable |
@@ -80,7 +80,7 @@ Il gate destinato alla CI e alla readiness finale è:
 scripts/check-repository.sh --require-prepared
 ```
 
-Finché la preparazione non è conclusa, il secondo comando deve fallire.
+Il secondo comando costituisce il gate di readiness e deve restare verde finché il repository mantiene lo stato `Prepared`.
 
 La CI usa lo stesso validator locale e non mantiene una seconda implementazione
 delle regole.
