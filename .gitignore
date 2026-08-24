@@ -1,0 +1,25 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.idea/
+.vscode/
+
+# Local environment and secrets
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+# Temporary files
+tmp/
+*.tmp
+
+# Private/local material
+private/
+personal/
+sources/private/
+sources/**/private/
