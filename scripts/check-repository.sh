@@ -110,6 +110,7 @@ check_only_readme() {
 printf '\n===== STRUTTURA CANONICA =====\n'
 
 check_file README.md
+check_file LICENSE
 check_file .editorconfig
 check_file .gitattributes
 check_file .gitignore
@@ -128,6 +129,7 @@ check_file lesson-learned/README.md
 
 check_dir scripts
 check_file scripts/check-repository.sh
+check_file scripts/check-markdown-links.py
 
 printf '\n===== CONTRATTO DEGLI STATI =====\n'
 
@@ -331,6 +333,14 @@ if [ "$forbidden_found" -eq 0 ]; then
     ok "nessun candidato pubblico vietato rilevato"
 else
     fail "anti-leakage content check"
+fi
+
+printf '\n===== LINK MARKDOWN RELATIVI =====\n'
+
+if python3 scripts/check-markdown-links.py; then
+    ok "validazione link Markdown"
+else
+    fail "validazione link Markdown"
 fi
 
 printf '\n===== INTEGRAZIONE CI =====\n'
